@@ -1,9 +1,11 @@
+
 {
   "presets": [
-    ["@babel/preset-env", {
-      "targets": {
-        "node": "8.10"
-      }
-    }]
+    [ "@babel/preset-env", { "targets": { "node": "8.10.0" }, "shippedProposals": true } ],
+    [ "@babel/preset-flow" ]
+  ],
+  "plugins": [
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-object-rest-spread"
   ]
 }

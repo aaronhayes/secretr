@@ -10,8 +10,14 @@
     "backend"
   ],
   "scripts": {
+    "preinstall": "scripts/preinstall.sh",
     "precommit": "cd backend && yarn lint",
-    "start": "start:backend",
-    "start:backend": "cd backend && yarn start"
+    "start": "scripts/start.sh",
+    "test": "scripts/test.sh",
+    "deploy:staging": "cd backend && yarn deploy:staging",
+    "deploy:prod": "cd backend && yarn deploy:prod"
+  },
+  "devDependencies": {
+    "hollaback": "^1.1.1"
   }
 }

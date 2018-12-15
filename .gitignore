@@ -1,3 +1,9 @@
 **.env**
 
 **node_modules/
+
+# Docker Persisted Data
+volumes/
+
+# Yarn error logs
+**yarn-error.log

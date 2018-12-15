@@ -15,57 +15,82 @@ service: secretr-backend
 
 provider:
   name: aws
+  region: us-east-1
   runtime: nodejs8.10
-  environment: ${file(./env.yml):${opt:stage, self:provider.stage}}
+  profile: secretr
+  environment:
+    ENV: ${opt:stage, self:provider.stage}
+    SECRETS: ${self:custom.kmsSecrets.secrets.SECRETS}
   timeout: 30
-
   iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:Query
-          - dynamodb:Scan
-          - dynamodb:GetItem
-          - dynamodb:PutItem
-          - dynamodb:UpdateItem
-          - dynamodb:DeleteItem
-        Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+    - Effect: Allow
+      Action:
+        - KMS:Decrypt
+      Resource: ${self:custom.kmsSecrets.keyArn}
 
 functions:
   githubWebhook:
     handler: src/functions/github/webhook.default
+    name: ${self:provider.stage}-webhook
     events:
       - http:
           path: github/webhook
           method: post
           cors: true
 
+  githubCheck:
+    handler: src/functions/github/check.handleGitHubQueueCheck
+    name: ${self:provider.stage}-check
+    timeout: 600
+    events:
+      - sqs:
+          queueName: ${self:provider.stage}-GitHubCheckQueue
+          arn:
+            Fn::GetAtt:
+              - ${self:provider.stage}-GitHubCheckQueue
+              - Arn
+
 resources:
   Resources:
-    DynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
+    GitHubCheckQueue:
+      Type: AWS::SQS::Queue
       Properties:
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
-
+        QueueName: ${self:provider.stage}-GitHubCheckQueue
 
 plugins:
   - serverless-webpack
-  # - serverless-dynamodb-local
+  - serverless-domain-manager
+  - serverless-kms-secrets
+  - serverless-offline-sqs
   - serverless-offline
 
 custom:
+  stages:
+    - dev
+    - staging
+    - prod
+
   serverless-offline:
     port: 3000
+    babelOptions:
+      presets: [
+        ["@babel/preset-env", { "targets": { "node": "8.10.0" }, "shippedProposals": true }],
+        ["@babel/preset-flow"]
+      ]
+  
+  customDomain:
+    domainName: api.secretr.co
+    basePath: ${self:provider.stage}
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+
   webpack:
+    webpackConfig: ./webpack.config.js
     includeModules: true
+
+  serverless-offline-sqs:
+    endpoint: http://localhost:4576
+
+  serverless-kms-secrets:
+    secretsFile: kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml
+  kmsSecrets: ${file(kms-secrets.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml)}

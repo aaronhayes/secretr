@@ -1,0 +1,14 @@
+version: "2.1"
+services:
+  # AWS Localstack for development mode
+  localstack:
+    image: localstack/localstack
+    environment:
+      SERVICES: sqs
+      DATA_DIR: /tmp/localstack/data
+    ports:
+      - 4567-4583:4567-4583
+      - 8080:8080
+    volumes:
+      # Persist data
+      - ./volumes/localstack:/tmp/localstack/data

@@ -10,3 +10,6 @@ jspm_packages
 
 # DynamoDB
 .dynamodb/
+
+# Flow Types
+flow-typed

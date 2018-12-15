@@ -1,0 +1,20 @@
+{
+  "psi-header.variables": [
+    ["projectCreationYear", "2018"],
+    ["packagename", "@secretr"]
+  ],
+  "psi-header.templates": [
+      {
+          "language": "*",
+          "template": [
+              "ENTER DESCRIPTION HERE",
+              "",
+              "--------",
+              "@package: <<packagename>>",
+              "@author: <<author>> (<<authoremail>>)",
+              "@since: <<filecreated('DD-MMMM-YYYY')>>",
+              "@flow"
+          ]
+      }
+  ]
+}
