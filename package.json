@@ -1,0 +1,17 @@
+{
+  "name": "secretr",
+  "version": "1.0.0",
+  "description": "Keep your API Keys and Secrets Safe",
+  "main": "index.js",
+  "author": "Aaron Hayes",
+  "license": "UNLICENSED",
+  "private": true,
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "precommit": "cd backend && yarn lint",
+    "start": "start:backend",
+    "start:backend": "cd backend && yarn start"
+  }
+}
