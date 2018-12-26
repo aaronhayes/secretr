@@ -13,11 +13,17 @@ export const DEFAULT_REGION: string = 'us-east-1';
 export const ENV: string = process.env.ENV || 'dev';
 export const PREFIX: string = `${ENV}-`;
 
-const credentials = new AWS.SharedIniFileCredentials({ profile: 'secretr' });
-AWS.config.update({
-  region: DEFAULT_REGION,
-  credentials
-});
+if (ENV === 'dev') {
+  const credentials = new AWS.SharedIniFileCredentials({ profile: 'secretr' });
+  AWS.config.update({
+    region: DEFAULT_REGION,
+    credentials
+  });
+} else {
+  AWS.config.update({
+    region: DEFAULT_REGION
+  });
+}
 
 // Local Endpoints
 const sqsLocalEndpoint: string = 'http://localhost:4576';

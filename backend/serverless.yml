@@ -27,6 +27,10 @@ provider:
       Action:
         - KMS:Decrypt
       Resource: ${self:custom.kmsSecrets.keyArn}
+    - Effect: Allow
+      Action:
+        - sqs:*
+      Resource: "*"
 
 functions:
   githubAuth:
