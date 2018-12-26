@@ -42,6 +42,8 @@
   "scripts": {
     "postinstall": "yarn flow-typed install",
     "init:sqs": "node scripts/init/sqs --stage dev",
+    "init:staging": "node scripts/init/sqs --stage staging",
+    "init:prod": "node scripts/init/sqs --stage prod",
     "start": "serverless offline start -s dev --aws-profile secretr",
     "deploy:staging": "sls deploy -s staging --aws-profile secretr",
     "deploy:prod": "sls deploy -s prod --aws-profile secretr",
