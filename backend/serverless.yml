@@ -31,7 +31,7 @@ provider:
 functions:
   githubAuth:
     handler: src/functions/github/auth.default
-    name: ${self:provider.stage}-github-auth 
+    name: ${self:provider.environment.ENV}-github-auth 
     events:
       - http:
           path: github/auth
@@ -40,7 +40,7 @@ functions:
 
   githubWebhook:
     handler: src/functions/github/webhook.default
-    name: ${self:provider.stage}-github-auth
+    name: ${self:provider.environment.ENV}-github-webhook
     events:
       - http:
           path: github/webhook
@@ -49,14 +49,14 @@ functions:
 
   githubCheck:
     handler: src/functions/github/check.handleGitHubQueueCheck
-    name: ${self:provider.stage}-github-check
+    name: ${self:provider.environment.ENV}-github-check
     timeout: 600
     events:
       - sqs:
-          queueName: ${self:provider.stage}-GitHubCheckQueue
+          queueName: ${self:provider.environment.ENV}-GitHubCheckQueue
           arn:
             Fn::GetAtt:
-              - ${self:provider.stage}-GitHubCheckQueue
+              - GitHubCheckQueue
               - Arn
 
 resources:
@@ -64,7 +64,8 @@ resources:
     GitHubCheckQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: ${self:provider.stage}-GitHubCheckQueue
+        QueueName: ${self:provider.environment.ENV}-GitHubCheckQueue
+        VisibilityTimeout: 600
 
 plugins:
   - serverless-webpack
@@ -89,8 +90,8 @@ custom:
   
   customDomain:
     domainName: api.secretr.co
-    basePath: ${self:provider.stage}
-    stage: ${self:provider.stage}
+    basePath: ${opt:stage, self:provider.stage}
+    stage: ${opt:stage, self:provider.stage}
     createRoute53Record: true
 
   webpack:
