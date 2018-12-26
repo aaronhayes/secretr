@@ -29,9 +29,18 @@ provider:
       Resource: ${self:custom.kmsSecrets.keyArn}
 
 functions:
+  githubAuth:
+    handler: src/functions/github/auth.default
+    name: ${self:provider.stage}-github-auth 
+    events:
+      - http:
+          path: github/auth
+          method: get
+          cors: true
+
   githubWebhook:
     handler: src/functions/github/webhook.default
-    name: ${self:provider.stage}-webhook
+    name: ${self:provider.stage}-github-auth
     events:
       - http:
           path: github/webhook
@@ -40,7 +49,7 @@ functions:
 
   githubCheck:
     handler: src/functions/github/check.handleGitHubQueueCheck
-    name: ${self:provider.stage}-check
+    name: ${self:provider.stage}-github-check
     timeout: 600
     events:
       - sqs:
