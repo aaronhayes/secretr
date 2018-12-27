@@ -62,6 +62,7 @@ functions:
             Fn::GetAtt:
               - GitHubCheckQueue
               - Arn
+          batchSize: 1
 
 resources:
   Resources:
