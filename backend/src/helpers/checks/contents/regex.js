@@ -10,7 +10,7 @@
 const octokit = require('@octokit/rest')();
 
 const STRONG_PASSWORD = {
-  regex: /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{16,64})/g,
+  regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*\(\)-_\+`~\[\]\{\};:'"<,>\.\?\/\\\|])[A-Za-z\d!@#\$%\^&\*\(\)-_\+`~\[\]\{\};:'"<,>\.\?\/\\\|]{8,128}$/g,
   tilte: 'Strong Password',
   message: 'Possible password detected - check this file',
   annotationLevel: 'warning'
@@ -93,10 +93,10 @@ const STRIPE = {
   annotationLevel: 'failure'
 };
 
-const FOURSQUARE = {
+const GENERIC_API_KEY = {
   regex: /[0-9A-Z]{48}/g,
-  title: 'Foursquare API Key',
-  message: 'Possible Foursquare API key detected',
+  title: 'API Key',
+  message: 'Possible API key detected',
   annotationLevel: 'failure'
 };
 
@@ -113,7 +113,7 @@ const REGEX_CHECKS: Array<Object> = [
   GITHUB,
   SLACK,
   STRIPE,
-  FOURSQUARE
+  GENERIC_API_KEY
 ];
 
 const WHITELIST_FILE_TYPES_REGEX = /^.*\.(icon|ico|css|svg|lock|xls|xlsx|doc|docx|jpg|jpeg|gif|pdf|png|bin|pyc|exe|)$/g;
