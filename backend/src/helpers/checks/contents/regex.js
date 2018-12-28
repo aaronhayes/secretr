@@ -39,7 +39,7 @@ const REGEX_CHECKS = [
   FOURSQUARE
 ];
 
-const WHITELIST_FILE_TYPES_REGEX = /^.*\.(xls|xlsx|doc|docx|jpg|jpeg|gif|pdf|png|bin|pyc|exe|)$/g;
+const WHITELIST_FILE_TYPES_REGEX = /^.*\.(lock|xls|xlsx|doc|docx|jpg|jpeg|gif|pdf|png|bin|pyc|exe|)$/g;
 
 export const testFile = (filePath: string, fileContents: string) => {
   const annotations = [];
