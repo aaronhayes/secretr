@@ -9,21 +9,98 @@
  */
 const octokit = require('@octokit/rest')();
 
-const STRONG_PASSWORD = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,64})/g;
-const AWS_CLIENT_ID = /AKIA[0-9A-Z]{16}/g;
-const AWS_SECRET_KEY = /[0-9a-zA-Z/+]{40}/g;
-const PKCS8 = /-----BEGIN PRIVATE KEY-----/g;
-const RSA = /-----BEGIN RSA PRIVATE KEY-----/g;
-const SSH = /-----BEGIN OPENSSH PRIVATE KEY-----/g;
-const PGP = /-----BEGIN PGP PRIVATE KEY BLOCK-----/g;
-const FACEBOOK = /(.{0,4})?['\"][0-9a-f]{32}['\"]/g;
-const TWITTER = /(.{0,4})?['\"][0-9a-zA-Z]{35,44}['\"]/g;
-const GITHUB = /(.{0,4})?['\"][0-9a-zA-Z]{35,40}['\"]/g;
-const SLACK = /xox[baprs]-([0-9a-zA-Z]{10,48})?/g;
-const STRIPE = /sk_(live|test)_[0-9a-zA-Z]{24}/g;
-const FOURSQUARE = /[0-9A-Z]{48}/g;
+const STRONG_PASSWORD = {
+  regex: /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{16,64})/g,
+  tilte: 'Strong Password',
+  message: 'Possible password detected - check this file',
+  annotationLevel: 'warning'
+};
 
-const REGEX_CHECKS = [
+const AWS_CLIENT_ID = {
+  regex: /AKIA[0-9A-Z]{16}/g,
+  title: 'AWS Client ID',
+  message: 'This looks like an AWS Client ID',
+  annotationLevel: 'failure'
+};
+
+const AWS_SECRET_KEY = {
+  regex: /[0-9a-zA-Z/+]{40}/g,
+  title: 'AWS Secret Key',
+  message: 'This looks like an AWS Secret Key',
+  annotationLevel: 'failure'
+};
+
+const PKCS8 = {
+  regex: /-----BEGIN PRIVATE KEY-----/g,
+  title: 'Private Key',
+  message: 'Potential Private Key Leaked',
+  annotationLevel: 'failure'
+};
+
+const RSA = {
+  regex: /-----BEGIN RSA PRIVATE KEY-----/g,
+  title: 'Private RSA Key',
+  message: 'Potential Private RSA Key Leaked',
+  annotationLevel: 'failure'
+};
+
+const SSH = {
+  regex: /-----BEGIN OPENSSH PRIVATE KEY-----/g,
+  title: 'Private SSH Key',
+  message: 'Potential Private SSH Key Leaked',
+  annotationLevel: 'failure'
+};
+
+const PGP = {
+  regex: /-----BEGIN PGP PRIVATE KEY BLOCK-----/g,
+  title: 'Private PGP Key',
+  message: 'Potential Private PGP Key Leaked',
+  annotationLevel: 'failure'
+};
+
+const FACEBOOK = {
+  regex: /(.{0,4})?['\"][0-9a-f]{32}['\"]/g,
+  title: 'Facebook API Key',
+  message: 'Possible Facebook API key detected',
+  annotationLevel: 'failure'
+};
+
+const TWITTER = {
+  regex: /(.{0,4})?['\"][0-9a-zA-Z]{35,44}['\"]/g,
+  title: 'Twitter API Key',
+  message: 'Possible Twitter API key detected',
+  annotationLevel: 'failure'
+};
+
+const GITHUB = {
+  regex: /(.{0,4})?['\"][0-9a-zA-Z]{35,40}['\"]/g,
+  title: 'GitHub API Key',
+  message: 'Possible GitHub API key detected',
+  annotationLevel: 'failure'
+};
+
+const SLACK = {
+  regex: /xox[baprs]-([0-9a-zA-Z]{10,48})?/g,
+  title: 'Slack API Key',
+  message: 'Possible Slack API key detected',
+  annotationLevel: 'failure'
+};
+
+const STRIPE = {
+  regex: /sk_(live|test)_[0-9a-zA-Z]{24}/g,
+  title: 'Stripe API Key',
+  message: 'Possible Stripe API key detected',
+  annotationLevel: 'failure'
+};
+
+const FOURSQUARE = {
+  regex: /[0-9A-Z]{48}/g,
+  title: 'Foursquare API Key',
+  message: 'Possible Foursquare API key detected',
+  annotationLevel: 'failure'
+};
+
+const REGEX_CHECKS: Array<Object> = [
   STRONG_PASSWORD,
   AWS_CLIENT_ID,
   AWS_SECRET_KEY,
@@ -39,7 +116,7 @@ const REGEX_CHECKS = [
   FOURSQUARE
 ];
 
-const WHITELIST_FILE_TYPES_REGEX = /^.*\.(lock|xls|xlsx|doc|docx|jpg|jpeg|gif|pdf|png|bin|pyc|exe|)$/g;
+const WHITELIST_FILE_TYPES_REGEX = /^.*\.(css|svg|lock|xls|xlsx|doc|docx|jpg|jpeg|gif|pdf|png|bin|pyc|exe|)$/g;
 
 export const testFile = (filePath: string, fileContents: string) => {
   const annotations = [];
@@ -48,15 +125,15 @@ export const testFile = (filePath: string, fileContents: string) => {
 
   for (const [index, line] of lines.entries()) {
     for (const regexCheck of REGEX_CHECKS) {
-      if (regexCheck.test(line)) {
+      if (regexCheck.regex.test(line)) {
         // Match found; add annotation
         annotations.push({
           path: filePath,
           start_line: index + 1,
           end_line: index + 1,
-          annotation_level: 'failure',
-          message: 'Suspicious string detected. Check this file carefully.',
-          title: 'Secret Key Suspected!'
+          annotation_level: regexCheck.annotationLevel || 'failure',
+          message: regexCheck.message,
+          title: regexCheck.title
         });
 
         // We've matched that line at least once; don't need to continously check it
