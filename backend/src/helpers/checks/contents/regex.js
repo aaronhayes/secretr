@@ -116,7 +116,7 @@ const REGEX_CHECKS: Array<Object> = [
   FOURSQUARE
 ];
 
-const WHITELIST_FILE_TYPES_REGEX = /^.*\.(css|svg|lock|xls|xlsx|doc|docx|jpg|jpeg|gif|pdf|png|bin|pyc|exe|)$/g;
+const WHITELIST_FILE_TYPES_REGEX = /^.*\.(icon|ico|css|svg|lock|xls|xlsx|doc|docx|jpg|jpeg|gif|pdf|png|bin|pyc|exe|)$/g;
 
 export const testFile = (filePath: string, fileContents: string) => {
   const annotations = [];
