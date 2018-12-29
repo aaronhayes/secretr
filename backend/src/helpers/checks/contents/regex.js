@@ -25,12 +25,12 @@ const AWS_CLIENT_ID = {
   annotationLevel: 'failure'
 };
 
-const AWS_SECRET_KEY = {
-  regex: /[0-9a-zA-Z/+]{40}/g,
-  title: 'AWS Secret Key',
-  message: 'This looks like an AWS Secret Key',
-  annotationLevel: 'failure'
-};
+// const AWS_SECRET_KEY = {
+//   regex: /[0-9a-zA-Z/+]{40}/g,
+//   title: 'AWS Secret Key',
+//   message: 'This looks like an AWS Secret Key',
+//   annotationLevel: 'failure'
+// };
 
 const PKCS8 = {
   regex: /-----BEGIN PRIVATE KEY-----/g,
@@ -61,21 +61,21 @@ const PGP = {
 };
 
 const FACEBOOK = {
-  regex: /(.{0,4})?['\"][0-9a-f]{32}['\"]/g,
+  regex: /(?i)facebook(.{0,4})?['\"][0-9a-f]{32}['\"]/g,
   title: 'Facebook API Key',
   message: 'Possible Facebook API key detected',
   annotationLevel: 'failure'
 };
 
 const TWITTER = {
-  regex: /(.{0,4})?['\"][0-9a-zA-Z]{35,44}['\"]/g,
+  regex: /(?i)twitter(.{0,4})?['\"][0-9a-zA-Z]{35,44}['\"]/g,
   title: 'Twitter API Key',
   message: 'Possible Twitter API key detected',
   annotationLevel: 'failure'
 };
 
 const GITHUB = {
-  regex: /(.{0,4})?['\"][0-9a-zA-Z]{35,40}['\"]/g,
+  regex: /(?i)github(.{0,4})?['\"][0-9a-zA-Z]{35,40}['\"]/g,
   title: 'GitHub API Key',
   message: 'Possible GitHub API key detected',
   annotationLevel: 'failure'
@@ -95,17 +95,10 @@ const STRIPE = {
   annotationLevel: 'failure'
 };
 
-const GENERIC_API_KEY = {
-  regex: /[0-9A-Z]{48}/g,
-  title: 'API Key',
-  message: 'Possible API key detected',
-  annotationLevel: 'failure'
-};
-
 const REGEX_CHECKS: Array<Object> = [
   STRONG_PASSWORD,
   AWS_CLIENT_ID,
-  AWS_SECRET_KEY,
+  // AWS_SECRET_KEY,
   PKCS8,
   RSA,
   SSH,
@@ -114,13 +107,15 @@ const REGEX_CHECKS: Array<Object> = [
   TWITTER,
   GITHUB,
   SLACK,
-  STRIPE,
-  GENERIC_API_KEY
+  STRIPE
 ];
 
 const OTHER_WHITELISTED_EXTENSIONS = ['css', 'svg', 'lock'];
 const WHITELISTED_FILE_EXTENSIONS = [...BINARY_EXTENSIONS, ...OTHER_WHITELISTED_EXTENSIONS];
 const WHITELIST_FILE_TYPES_REGEX = new RegExp(`^.*\.(${WHITELISTED_FILE_EXTENSIONS.join('|')})$`);
+
+const WHITELIST_FILENAME_PREFIXES = /(package-lock)/g;
+const WHITELIST_FILEPATHS = /(node_modules)/g;
 
 export const testFile = (filePath: string, fileContents: string) => {
   const annotations = [];
@@ -155,7 +150,11 @@ export const regex = async (commit: Object, owner: string, repo: string) => {
 
   for (const file of files) {
     // Whitelist certain filetypes
-    if (WHITELIST_FILE_TYPES_REGEX.test(file.filename)) {
+    if (
+      WHITELIST_FILE_TYPES_REGEX.test(file.filename) ||
+      WHITELIST_FILENAME_PREFIXES.test(file.filename) ||
+      WHITELIST_FILEPATHS.test(file.filePath)
+    ) {
       continue;
     }
 

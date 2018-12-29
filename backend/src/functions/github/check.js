@@ -84,7 +84,7 @@ const handleRequest = async (body: Object) => {
       output: {
         title: 'Secretr',
         summary: `Secretr has found at ${annotations.length} potential leaks with this commit.`,
-        annotations: annotations
+        annotations: annotations.slice(0, 50) // GitHub only supports 50 annotations max
       }
     });
   } else {
