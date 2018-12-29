@@ -61,21 +61,21 @@ const PGP = {
 };
 
 const FACEBOOK = {
-  regex: /(?i)facebook(.{0,4})?['\"][0-9a-f]{32}['\"]/g,
+  regex: /facebook(.{0,4})?['\"][0-9a-f]{32}['\"]/g,
   title: 'Facebook API Key',
   message: 'Possible Facebook API key detected',
   annotationLevel: 'failure'
 };
 
 const TWITTER = {
-  regex: /(?i)twitter(.{0,4})?['\"][0-9a-zA-Z]{35,44}['\"]/g,
+  regex: /twitter(.{0,4})?['\"][0-9a-zA-Z]{35,44}['\"]/g,
   title: 'Twitter API Key',
   message: 'Possible Twitter API key detected',
   annotationLevel: 'failure'
 };
 
 const GITHUB = {
-  regex: /(?i)github(.{0,4})?['\"][0-9a-zA-Z]{35,40}['\"]/g,
+  regex: /github(.{0,4})?['\"][0-9a-zA-Z]{35,40}['\"]/g,
   title: 'GitHub API Key',
   message: 'Possible GitHub API key detected',
   annotationLevel: 'failure'
