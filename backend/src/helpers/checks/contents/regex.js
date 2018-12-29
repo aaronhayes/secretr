@@ -119,11 +119,8 @@ const REGEX_CHECKS: Array<Object> = [
 ];
 
 const OTHER_WHITELISTED_EXTENSIONS = ['css', 'svg', 'lock'];
-
 const WHITELISTED_FILE_EXTENSIONS = [...BINARY_EXTENSIONS, ...OTHER_WHITELISTED_EXTENSIONS];
-
-const WHITELIST_FILE_TYPES_REGEX = new RegExp(`^.*\.${WHITELISTED_FILE_EXTENSIONS.join('|')}$`);
-console.log(WHITELIST_FILE_TYPES_REGEX);
+const WHITELIST_FILE_TYPES_REGEX = new RegExp(`^.*\.(${WHITELISTED_FILE_EXTENSIONS.join('|')})$`);
 
 export const testFile = (filePath: string, fileContents: string) => {
   const annotations = [];
