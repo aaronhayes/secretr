@@ -7,6 +7,8 @@
  * @since: 15-December-2018
  * @flow
  */
+import { BINARY_EXTENSIONS } from './binaries';
+
 const octokit = require('@octokit/rest')();
 
 const STRONG_PASSWORD = {
@@ -116,7 +118,12 @@ const REGEX_CHECKS: Array<Object> = [
   GENERIC_API_KEY
 ];
 
-const WHITELIST_FILE_TYPES_REGEX = /^.*\.(icon|ico|css|svg|lock|xls|xlsx|doc|docx|jpg|jpeg|gif|pdf|png|bin|pyc|exe|)$/g;
+const OTHER_WHITELISTED_EXTENSIONS = ['css', 'svg', 'lock'];
+
+const WHITELISTED_FILE_EXTENSIONS = [...BINARY_EXTENSIONS, ...OTHER_WHITELISTED_EXTENSIONS];
+
+const WHITELIST_FILE_TYPES_REGEX = new RegExp(`^.*\.${WHITELISTED_FILE_EXTENSIONS.join('|')}$`);
+console.log(WHITELIST_FILE_TYPES_REGEX);
 
 export const testFile = (filePath: string, fileContents: string) => {
   const annotations = [];

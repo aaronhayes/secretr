@@ -8,8 +8,9 @@
  * @flow
  */
 import { dotenv } from './dotenv';
+import { privateKey } from './privateKeys';
 
-const COMMIT_LEVEL_CHECKS = [dotenv];
+const COMMIT_LEVEL_CHECKS = [dotenv, privateKey];
 
 export const completeCommitLevelChecks = (commit: Object) => {
   let annotations = [];
