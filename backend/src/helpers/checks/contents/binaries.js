@@ -105,7 +105,6 @@ export const BINARY_EXTENSIONS = [
   'jpgv',
   'jpm',
   'jxr',
-  'key',
   'ktx',
   'lha',
   'lib',
