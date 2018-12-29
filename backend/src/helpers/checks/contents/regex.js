@@ -12,7 +12,7 @@ import { BINARY_EXTENSIONS } from './binaries';
 const octokit = require('@octokit/rest')();
 
 const STRONG_PASSWORD = {
-  regex: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*\(\)-_\+`~\[\]\{\};:'"<,>\.\?\/\\\|])[A-Za-z\d!@#\$%\^&\*\(\)-_\+`~\[\]\{\};:'"<,>\.\?\/\\\|]{8,128}$/g,
+  regex: /('|"|`)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*\(\)-_\+`~\[\]\{\};:'"<,>\.\?\/\\\|])[A-Za-z\d!@#\$%\^&\*\(\)-_\+`~\[\]\{\};:'"<,>\.\?\/\\\|]{8,128}('|"|`)/g,
   tilte: 'Strong Password',
   message: 'Possible password detected - check this file',
   annotationLevel: 'warning'
@@ -34,6 +34,13 @@ const AWS_CLIENT_ID = {
 
 const PKCS8 = {
   regex: /-----BEGIN PRIVATE KEY-----/g,
+  title: 'Private Key',
+  message: 'Potential Private Key Leaked',
+  annotationLevel: 'failure'
+};
+
+const PKCS = {
+  regex: /-----BEGIN ENCRYPTED PRIVATE KEY-----/g,
   title: 'Private Key',
   message: 'Potential Private Key Leaked',
   annotationLevel: 'failure'
@@ -100,6 +107,7 @@ const REGEX_CHECKS: Array<Object> = [
   AWS_CLIENT_ID,
   // AWS_SECRET_KEY,
   PKCS8,
+  PKCS,
   RSA,
   SSH,
   PGP,
