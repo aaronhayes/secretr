@@ -7,14 +7,15 @@
  * @since: 15-December-2018
  * @flow
  */
+import eol from 'eol';
 import { BINARY_EXTENSIONS } from './binaries';
 
 const octokit = require('@octokit/rest')();
 
 const STRONG_PASSWORD = {
-  regex: /('|"|`)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*\(\)-_\+`~\[\]\{\};:'"<,>\.\?\/\\\|])[A-Za-z\d!@#\$%\^&\*\(\)-_\+`~\[\]\{\};:'"<,>\.\?\/\\\|]{8,128}('|"|`)/g,
-  tilte: 'Strong Password',
-  message: 'Possible password detected - check this file',
+  regex: /('|")(?!.* )(?!.*http)(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{8,64}('|")/g,
+  tilte: 'Potential Password or Key',
+  message: 'This might be a password or key; please take care with these types of strings.',
   annotationLevel: 'warning'
 };
 
@@ -68,21 +69,21 @@ const PGP = {
 };
 
 const FACEBOOK = {
-  regex: /facebook(.{0,4})?['\"][0-9a-f]{32}['\"]/g,
+  regex: /facebook(.{0,4})?['\"][0-9a-f]{32}['\"]/gi,
   title: 'Facebook API Key',
   message: 'Possible Facebook API key detected',
   annotationLevel: 'failure'
 };
 
 const TWITTER = {
-  regex: /twitter(.{0,4})?['\"][0-9a-zA-Z]{35,44}['\"]/g,
+  regex: /twitter(.{0,4})?['\"][0-9a-zA-Z]{35,44}['\"]/gi,
   title: 'Twitter API Key',
   message: 'Possible Twitter API key detected',
   annotationLevel: 'failure'
 };
 
 const GITHUB = {
-  regex: /github(.{0,4})?['\"][0-9a-zA-Z]{35,40}['\"]/g,
+  regex: /github(.{0,4})?['\"][0-9a-zA-Z]{35,40}['\"]/gi,
   title: 'GitHub API Key',
   message: 'Possible GitHub API key detected',
   annotationLevel: 'failure'
@@ -103,7 +104,6 @@ const STRIPE = {
 };
 
 const REGEX_CHECKS: Array<Object> = [
-  STRONG_PASSWORD,
   AWS_CLIENT_ID,
   // AWS_SECRET_KEY,
   PKCS8,
@@ -115,7 +115,8 @@ const REGEX_CHECKS: Array<Object> = [
   TWITTER,
   GITHUB,
   SLACK,
-  STRIPE
+  STRIPE,
+  STRONG_PASSWORD
 ];
 
 const OTHER_WHITELISTED_EXTENSIONS = ['css', 'svg', 'lock'];
@@ -128,7 +129,7 @@ const WHITELIST_FILEPATHS = /(node_modules)/g;
 export const testFile = (filePath: string, fileContents: string) => {
   const annotations = [];
 
-  const lines = fileContents.split(/[\r\n]+/);
+  const lines = eol.split(fileContents);
 
   for (const [index, line] of lines.entries()) {
     for (const regexCheck of REGEX_CHECKS) {

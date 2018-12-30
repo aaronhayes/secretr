@@ -9,6 +9,7 @@
     "@harijoe/handly": "0.0.2",
     "@octokit/rest": "^16.1.0",
     "diff": "^3.5.0",
+    "eol": "^0.9.1",
     "jsonwebtoken": "^8.4.0",
     "middy": "^0.19.2",
     "request": "^2.88.0",
