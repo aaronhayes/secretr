@@ -90,7 +90,7 @@ const GITHUB = {
 };
 
 const SLACK = {
-  regex: /xox[baprs]-([0-9a-zA-Z]{10,48})?/g,
+  regex: /xox[baprs]-([0-9a-zA-Z]{10,48})/g,
   title: 'Slack API Key',
   message: 'Possible Slack API key detected',
   annotationLevel: 'failure'
@@ -100,6 +100,13 @@ const STRIPE = {
   regex: /sk_(live|test)_[0-9a-zA-Z]{24}/g,
   title: 'Stripe API Key',
   message: 'Possible Stripe API key detected',
+  annotationLevel: 'failure'
+};
+
+const MAILCHIMP = {
+  regex: /[0-9a-z]{32}-us[0-9]/g,
+  title: 'Mailchimp API Key',
+  message: 'Possible Mailchimp API key detected',
   annotationLevel: 'failure'
 };
 
@@ -116,6 +123,7 @@ const REGEX_CHECKS: Array<Object> = [
   GITHUB,
   SLACK,
   STRIPE,
+  MAILCHIMP,
   STRONG_PASSWORD
 ];
 
