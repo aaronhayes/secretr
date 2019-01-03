@@ -72,6 +72,7 @@ export const BINARY_EXTENSIONS = [
   'egg',
   'eol',
   'eot',
+  'eps',
   'epub',
   'exe',
   'f4v',

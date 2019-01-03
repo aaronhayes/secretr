@@ -65,11 +65,27 @@ const handleRequest = async (body: Object) => {
   const commit = await octokit.repos.getCommit({ owner, repo, sha: headSha });
 
   // Complete all checks and collect annotations
-  const commitLevelCheckRes = completeCommitLevelChecks(commit);
-  const contentLevelCheckRes = await completeContentLevelChecks(commit, owner, repo);
+  let commitLevelCheckRes = [];
+  let contentLevelCheckRes = [];
+  try {
+    commitLevelCheckRes = completeCommitLevelChecks(commit);
+    contentLevelCheckRes = await completeContentLevelChecks(commit, owner, repo);
+  } catch (err) {
+    console.error(err);
+    const completedAt = new Date();
+    return await octokit.checks.create({
+      owner,
+      repo,
+      name: 'Secretr',
+      head_sha: headSha,
+      status: 'completed',
+      conclusion: 'timed_out',
+      completed_at: completedAt.toISOString()
+    });
+  }
 
+  // Collect Results
   const annotations = [...commitLevelCheckRes, ...contentLevelCheckRes];
-
   const completedAt = new Date();
 
   if (annotations.length > 0) {

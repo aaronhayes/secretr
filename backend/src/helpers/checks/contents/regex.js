@@ -175,13 +175,22 @@ export const regex = async (commit: Object, owner: string, repo: string) => {
       continue;
     }
 
-    // $FlowFixMe
-    const contents = await octokit.repos.getContents({
-      owner: owner,
-      repo: repo,
-      path: file.filename,
-      ref: commit.data.sha
-    });
+    let content = null;
+    try {
+      // $FlowFixMe
+      contents = await octokit.repos.getContents({
+        owner: owner,
+        repo: repo,
+        path: file.filename,
+        ref: commit.data.sha
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
+    if (!content) {
+      continue;
+    }
 
     // Decode file contents to search for keys
     const buffer = Buffer.from(contents.data.content, contents.data.encoding);
