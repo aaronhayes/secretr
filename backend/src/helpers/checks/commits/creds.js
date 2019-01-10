@@ -17,7 +17,7 @@ export const creds = (commit: Object) => {
 
   // Check each file name
   for (const file of files) {
-    if (COMMON_CREDS_FILE.contains(file.filename)) {
+    if (COMMON_CREDS_FILE.includes(file.filename)) {
       failure = true;
       annotations.push({
         path: file.filename,
