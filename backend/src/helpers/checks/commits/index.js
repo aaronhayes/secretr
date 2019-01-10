@@ -7,10 +7,11 @@
  * @since: 15-December-2018
  * @flow
  */
+import { creds } from './creds';
 import { dotenv } from './dotenv';
 import { privateKey } from './privateKeys';
 
-const COMMIT_LEVEL_CHECKS = [dotenv, privateKey];
+const COMMIT_LEVEL_CHECKS = [creds, dotenv, privateKey];
 
 export const completeCommitLevelChecks = (commit: Object) => {
   let annotations = [];
