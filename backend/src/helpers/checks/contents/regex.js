@@ -185,7 +185,7 @@ export const regex = async (commit: Object, owner: string, repo: string) => {
         ref: commit.data.sha
       });
     } catch (err) {
-      console.error(err);
+      console.error('Error Getting Content', err, owner, repo, file.filename, commit.data.sha);
     }
 
     if (!content) {
